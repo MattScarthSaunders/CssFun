@@ -1,15 +1,17 @@
 <template>
-  <header>
-    <p>hello world!</p>
-  </header>
-
   <main>
+    <HeaderCustom></HeaderCustom>
     <ProjectList></ProjectList>
   </main>
 </template>
 
 <script setup lang="ts">
-import ProjectList from './components/ProjectList.vue'
+import HeaderCustom from './components/HeaderCustom.vue'
+import ProjectList from './components/projects/ProjectList.vue'
 </script>
 
-<style scoped></style>
+<style scoped>
+main {
+  height: 100vh;
+}
+</style>
