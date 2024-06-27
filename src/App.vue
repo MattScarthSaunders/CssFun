@@ -1,17 +1,18 @@
 <template>
   <main>
-    <HeaderCustom></HeaderCustom>
     <ProjectList></ProjectList>
   </main>
 </template>
 
 <script setup lang="ts">
-import HeaderCustom from './components/HeaderCustom.vue'
 import ProjectList from './components/projects/ProjectList.vue'
 </script>
 
 <style scoped>
 main {
+  width: 100vw;
   height: 100vh;
+  background-color: rgb(38, 38, 38);
+  overflow: hidden;
 }
 </style>
