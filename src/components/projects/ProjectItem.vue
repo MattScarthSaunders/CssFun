@@ -1,23 +1,29 @@
 <template>
   <li ref="frame" class="project">
     <div class="lamp"></div>
-    <iframe :id="project.title + `frame`" class="frame" :src="project.imageUrl"></iframe>
-    <iframe :id="project.title + `frameBlur`" class="frameBlur" :src="project.imageUrl"></iframe>
+    <iframe :id="project.detail.title + `frame`" class="frame" :src="project.imageUrl"></iframe>
+    <iframe
+      :id="project.detail.title + `frameBlur`"
+      class="frameBlur"
+      :src="project.imageUrl"
+    ></iframe>
     <div class="controls">
       <button class="zoom" @click="$emit('modalUrlUpdate', project.imageUrl)">
         {{ zoom }}
       </button>
     </div>
-    <div class="detail">
-      <h6>{{ project.detail.title }}</h6>
-      <p>{{ project.detail.body }}</p>
-    </div>
+    <ProjectDetailMicro
+      :title="project.detail.title"
+      :body="project.detail.body"
+      @zoomDetail="$emit('zoomDetail', project.detail.title)"
+    ></ProjectDetailMicro>
   </li>
 </template>
 
 <script setup lang="ts">
 import { ref, watchEffect, type Ref } from 'vue'
 import type { Project } from './types'
+import ProjectDetailMicro from './ProjectDetailMicro.vue'
 
 defineProps<{ project: Project }>()
 
@@ -134,41 +140,5 @@ watchEffect(() => {
     inset -5px 5px 15px -10px rgb(29, 206, 2);
   border-radius: 15px 15px 0 0;
   border-bottom: 1px solid burlywood;
-}
-
-.detail {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: 10%;
-  height: 30%;
-  background: white;
-  position: absolute;
-  right: -100px;
-  top: 37.5%;
-  font-size: 0.5rem;
-  padding: 5px;
-  overflow: hidden;
-  border-left: 4px solid rgb(114, 84, 56);
-  border-top: 4px solid rgb(114, 84, 56);
-  border-right: 4px solid rgb(175, 124, 76);
-  border-bottom: 4px solid rgb(175, 124, 76);
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.78);
-  border-radius: 2px;
-}
-
-.detail:hover {
-  cursor: pointer;
-  filter: brightness(1.2);
-}
-
-.detail h6,
-p {
-  text-overflow: ellipsis;
-  filter: blur(1px) brightness(0.9);
-}
-
-.detail p {
-  font-size: 0.25rem;
 }
 </style>

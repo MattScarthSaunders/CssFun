@@ -1,35 +1,51 @@
 <template>
   <section ref="frameContainer" class="container">
-    <dialog v-if="modalUrl !== ''" class="modal">
-      <button class="close" @click="() => (modalUrl = '')">&times;</button>
+    <ProjectRenderModal v-if="modalUrl !== ''" @close="updateUrl">
       <iframe class="modalFrame" :src="modalUrl"></iframe>
-    </dialog>
+    </ProjectRenderModal>
+    <ProjectRenderModal v-if="modalTitle !== ''" @close="updateTitle">
+      <ProjectDetailMacro
+        class="overrideDetail"
+        :title="zoomedProject?.detail.title!"
+        :body="zoomedProject?.detail.body!"
+      ></ProjectDetailMacro>
+    </ProjectRenderModal>
+
     <ul class="list">
       <ProjectItem
         v-bind:key="index"
         v-for="(project, index) in projects"
         :project="project"
-        @modalUrlUpdate="
-          (url: string) => {
-            modalUrl = url
-          }
-        "
+        @modalUrlUpdate="updateUrl"
+        @zoomDetail="updateTitle"
       />
     </ul>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect, type Ref } from 'vue'
-import ProjectItem from './ProjectItem.vue'
+import { computed, ref, watchEffect, type Ref } from 'vue'
 import type { Project } from './types'
+import ProjectItem from './ProjectItem.vue'
+import ProjectDetailMacro from './ProjectDetailMacro.vue'
+import ProjectRenderModal from './ProjectRenderModal.vue'
 
 const modalUrl = ref('')
+const modalTitle = ref('')
+const zoomedProject = computed(() =>
+  projects.value.find((p) => p.detail.title === modalTitle.value)
+)
+
+const updateUrl = (url: string) => {
+  modalUrl.value = url
+}
+const updateTitle = (title: string) => {
+  modalTitle.value = title
+}
 
 const projects = ref<Project[]>([
   {
     imageUrl: 'https://synthwaveryder.netlify.app',
-    title: 'SynthwaveRyder',
     isInteractive: true,
     detail: {
       title: 'Synthwave Ryder',
@@ -38,7 +54,6 @@ const projects = ref<Project[]>([
   },
   {
     imageUrl: 'src/frames/solaris/solaris.html',
-    title: 'solaris',
     isInteractive: false,
     detail: {
       title: 'Solaris',
@@ -84,19 +99,6 @@ watchEffect(() => {
   gap: 200px;
 }
 
-.modal {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.562);
-  z-index: 99;
-}
-
 .modalFrame {
   width: 1920px;
   height: 1080px;
@@ -107,15 +109,5 @@ watchEffect(() => {
   -o-transform: scale(v-bind(scale - 0.2));
   -webkit-transform: scale(v-bind(scale - 0.2));
   border: none;
-}
-.close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 20px;
-  height: 20px;
-  background: white;
-  border: none;
-  border-radius: 100%;
 }
 </style>
